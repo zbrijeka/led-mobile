@@ -1,21 +1,19 @@
 'use strict';
 
-var PORT = 33333;
-var HOST = '127.0.0.1'
+const http = require('http');
+const port = 8080;
 
-var dgram = require('dgram');
-var server = dgram.createSocket('udp4');
+const requestHandler = (request, response) => {
+    console.log(request.url);
+    response.end('Hello Node.js Server!');
+}
 
-server.on('listening', function () {
-    var address = server.address();
-    console.log('UDP Server listening on ' + address.address + ":" + address.port);
+const server = http.createServer(requestHandler);
+
+server.listen(port, (err) => {
+    if (err) {
+        return console.log('something bad happened', err);
+    }
+
+    console.log(`server is listening on ${port}`);
 });
-
-server.on('message', function (message, remote) {
-    console.log(remote.address + ':' + remote.port + ' - ' + message);
-
-    server.send('received: ' + message, remote.port, remote.address);
-});
-
-server.bind(PORT);
-//server.bind(PORT, HOST);
